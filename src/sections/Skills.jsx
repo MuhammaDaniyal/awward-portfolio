@@ -51,7 +51,7 @@ const Skills = () => {
       
       <div
         id="skill-2"
-        className="flex items-center justify-center gap-3 translate-x-60"
+        className="flex items-center justify-center gap-3 translate-x-10"
       >
         <p>C/C++</p>
         <div className="w-10 h-1 md:w-32 bg-gold" />
@@ -69,7 +69,7 @@ const Skills = () => {
         <p className="italic">openacc</p>
       </div>
       
-      <div id="skill-4" className="flex items-center justify-center gap-3 -translate-x-15">
+      <div id="skill-4" className="flex items-center justify-center gap-3 translate-x-25">
         <p>SQL</p>
         <div className="w-10 h-1 md:w-32 bg-gold" />
         <p>JavaScript</p>

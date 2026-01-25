@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { socials } from "../constants";
+import { socials, contactData } from "../constants";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Link } from "react-scroll";
@@ -72,21 +72,6 @@ const Navbar = () => {
       );
   }, []);
 
-  useEffect(() => {
-    // let lastScrollY = window.scrollY;
-    // const handleScroll = () => {
-    //   const currentScrollY = window.scrollY;
-
-    //   setShowBurger(currentScrollY <= lastScrollY || currentScrollY < 10);
-
-    //   lastScrollY = currentScrollY;
-    // };
-    // window.addEventListener("scroll", handleScroll, {
-    //   passive: true,
-    // });
-    // return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const toggleMenu = () => {
     if (isOpen) {
       tl.current.reverse();
@@ -127,7 +112,7 @@ const Navbar = () => {
           <div className="font-light">
             <p className="tracking-wider text-white/50">E-mail</p>
             <p className="text-xl tracking-widest lowercase text-pretty">
-              JohnDoe@gmail.com
+              {contactData.email}
             </p>
           </div>
           <div className="font-light">
@@ -137,6 +122,7 @@ const Navbar = () => {
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank" 
                   className="text-sm leading-loose tracking-widest uppercase hover:text-white transition-colors duration-300"
                 >
                   {"{ "}

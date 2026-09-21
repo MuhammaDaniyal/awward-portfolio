@@ -1,12 +1,13 @@
 import { useGSAP } from "@gsap/react";
-import AnimatedHeaderSection from "../components/AnimatedHeaderSection";
-import { socials, contactData } from "../constants";
 import gsap from "gsap";
-
+import AnimatedHeaderSection from "../components/AnimatedHeaderSection";
+import { socials, contactData, resume } from "../constants";
+import { prefersReducedMotion } from "../utils/motion";
 
 const Contact = () => {
-
   useGSAP(() => {
+    if (prefersReducedMotion()) return;
+
     gsap.from(".social-link", {
       y: 100,
       opacity: 0,
@@ -14,22 +15,17 @@ const Contact = () => {
       duration: 1,
       stagger: 0.3,
       ease: "back.out",
-      scrollTrigger: {
-        trigger: ".social-link",
-      },
+      scrollTrigger: { trigger: ".social-link" },
     });
   }, []);
-  
+
   return (
-    <section
-      id="contact"
-      className="flex flex-col justify-between bg-black"
-    >
+    <section id="contact" className="flex flex-col justify-between bg-black">
       <div>
         <AnimatedHeaderSection
           subTitle={contactData.tagline}
           title={"Contact"}
-          text={contactData.text} 
+          text={contactData.text}
           textColor={"text-white"}
           withScrollTrigger={true}
         />
@@ -38,21 +34,48 @@ const Contact = () => {
             <div className="social-link">
               <h2>E-mail</h2>
               <div className="w-full h-px my-2 bg-white/30" />
-              <p className="text-xl tracking-wider lowercase md:text-2xl lg:text-3xl">
+              <a
+                href={`mailto:${contactData.email}`}
+                className="text-xl tracking-wider lowercase transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
+              >
                 {contactData.email}
-              </p>
+              </a>
+            </div>
+
+            <div className="social-link">
+              <h2>Phone</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <a
+                href={`tel:${contactData.phone.replace(/\s/g, "")}`}
+                className="text-xl tracking-wider transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
+              >
+                {contactData.phone}
+              </a>
+            </div>
+
+            <div className="social-link">
+              <h2>Résumé</h2>
+              <div className="w-full h-px my-2 bg-white/30" />
+              <a
+                href={resume.href}
+                download
+                className="text-xl tracking-wider transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
+              >
+                {resume.label} ↓
+              </a>
             </div>
 
             <div className="social-link">
               <h2>Social Media</h2>
               <div className="w-full h-px my-2 bg-white/30" />
               <div className="flex flex-wrap gap-2">
-                {socials.map((social, index) => (
+                {socials.map((social) => (
                   <a
-                    key={index}
+                    key={social.name}
                     href={social.href}
                     target="_blank"
-                    className="text-xs leading-loose tracking-wides uppercase md:text-sm hover:text-white/80 transition-colors duration-200"
+                    rel="noopener noreferrer"
+                    className="text-xs leading-loose tracking-widest uppercase transition-colors duration-200 md:text-sm hover:text-white/80"
                   >
                     {"{ "}
                     {social.name}

@@ -1,47 +1,54 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import ReactLenis from "lenis/react";
 import Navbar from "./sections/Navbar";
 import Hero from "./sections/Hero";
 import Skills from "./sections/Skills";
-import Projects from "./sections/Projects";
-import ReactLenis from "lenis/react";
 import About from "./sections/About";
+import Experience from "./sections/Experience";
+import Projects from "./sections/Projects";
 import Contact from "./sections/Contact";
-import { useProgress } from "@react-three/drei";
+import { prefersReducedMotion } from "./utils/motion";
+
+// The headline is set in Amiamie at ~150px, so swapping the fallback out mid-view
+// is very visible. Hold the fade-in until the fonts resolve — but never longer
+// than MAX_WAIT, so a slow or failed font can't lock anyone out of the site.
+const MAX_WAIT = 1500;
 
 const App = () => {
-  const { progress } = useProgress();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (progress === 100) {
+    let done = false;
+    const reveal = () => {
+      if (done) return;
+      done = true;
       setIsReady(true);
-    }
-  }, [progress]);
+    };
+
+    const timer = setTimeout(reveal, MAX_WAIT);
+    document.fonts?.ready.then(reveal).catch(reveal) ?? reveal();
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <ReactLenis root className="relative w-screen min-h-screen overflow-x-auto">
-      {!isReady && (
-        <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black text-white transition-opacity duration-700 font-light">
-          <p className="mb-4 text-xl tracking-widest animate-pulse">
-            Loading {Math.floor(progress)}%
-          </p>
-          <div className="relative h-1 overflow-hidden rounded w-60 bg-white/20">
-            <div
-              className="absolute top-0 left-0 h-full transition-all duration-300 bg-white"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-        </div>
-      )}
+    <ReactLenis
+      root
+      // Hijacking the wheel is the single most disorienting thing here for
+      // motion-sensitive users, so hand scrolling back to the browser.
+      options={{ smoothWheel: !prefersReducedMotion() }}
+      className="relative w-full min-h-screen overflow-x-clip"
+    >
       <div
         className={`${
           isReady ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-1000`}
+        } transition-opacity duration-700`}
       >
         <Navbar />
         <Hero />
         <Skills />
         <About />
+        <Experience />
         <Projects />
         <Contact />
       </div>

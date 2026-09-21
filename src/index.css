@@ -60,76 +60,72 @@
   font-display: swap;
 }
 
-/* Amiamie-Round Variants (if needed separately) */
-@font-face {
-  font-family: "Amiamie-Round";
-  src: url("/fonts/amiamie/otf/Amiamie-RegularRound.otf") format("opentype"),
-    url("/fonts/amiamie/ttf/Amiamie-RegularRound.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Amiamie-Round";
-  src: url("/fonts/amiamie/otf/Amiamie-BlackRound.otf") format("opentype"),
-    url("/fonts/amiamie/ttf/Amiamie-BlackRound.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Amiamie-Round";
-  src: url("/fonts/amiamie/otf/Amiamie-BlackItalicRound.otf") format("opentype"),
-    url("/fonts/amiamie/ttf/Amiamie-BlackItalicRound.ttf") format("truetype");
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-}
 @theme {
   --color-primary: #e5e5e0;
   --color-DarkLava: #393632;
   --color-SageGray: #8b8b73;
   --color-gold: #cfa355;
   --font-amiamie: "Amiamie", sans-serif;
-  --font-amiamie-round: "Amiamie-Round", sans-serif;
+}
 
-  --animate-marquee: marquee 40s infinite linear;
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(calc(-100% - var(--gap)));
-    }
-  }
+/* The closed off-canvas menu sits at translateX(100%), i.e. a full viewport
+   width past the right edge. `clip` stops that creating a horizontal scroll
+   without turning the root into a scroll container the way `hidden` does. */
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
   background: #e5e5e0;
   color: black;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
   font-family: var(--font-amiamie);
 }
 
-@utility clip-path {
-  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+/* Lenis owns scrolling; a CSS smooth-scroll on top of it fights the JS easing. */
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* "M.DANIYAL" renders ~5.24em wide, so the old fixed steps overflowed the
+   content box at 360/390/430/640px. A fluid size keeps it inside the gutters at
+   every width and still caps at the original 152px from ~1050px up.
+
+   line-height MUST stay >= 1. The design wants the rule to cross the baseline,
+   which a sub-1 line-height used to achieve — but GSAP SplitText's `mask` option
+   sizes each character's clipping box to the line box, so a 0.53em leading
+   sheared ~47% off every glyph. The overlap is now produced by pulling the rule
+   up onto the baseline instead (see --banner-descent), which leaves the glyphs
+   whole. Measured on Amiamie: ascent 117 + descent 35 = exactly 1.0em. */
+:root {
+  --banner-size: clamp(2.5rem, 14.5vw, 152px);
+  --banner-descent: 0.23; /* 35/152 — baseline to bottom of a line-height:1 box */
 }
 
 @utility banner-text-responsive {
-  @apply text-[68px] sm:text-[118px] md:text-[126px] lg:text-[152px] leading-9 sm:leading-16 lg:leading-20;
+  font-size: var(--banner-size);
+  line-height: 1;
 }
 
 @utility value-text-responsive {
   @apply text-2xl md:text-[26px] lg:text-[32px];
 }
 
-@utility marquee-text-responsive {
-  @apply text-[28px] sm:text-[36px] lg:text-[42px];
-}
-
 @utility contact-text-responsive {
   @apply text-[42px] sm:text-[52px] md:text-[62px] lg:text-[100px];
+}
+
+/* Between Lenis, the GSAP entrances and the hero lattice there is a lot of
+   motion here. Honour the OS-level request to stop it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -37,8 +37,8 @@ CS undergraduate with experience in AI-powered applications, full-stack developm
 ***
 
 ## SKILLS
-* **Languages:** C/C++, Python, Java, SQL, JavaScript  
-* **Frameworks & Web:** React, Next.js, Node.js, Express, MongoDB, Flask, Streamlit  
+* **Languages:** C/C++, Python, Java, SQL, JavaScript, TypeScript  
+* **Frameworks & Web:** React, Next.js, Tailwind, Node.js, Express, MongoDB, Flask, Streamlit  
 * **Parallel & Systems:** CUDA, OpenMP, OpenACC, OpenMPI, OpenCL, AVX2 SIMD, Linux  
 * **Tools & Platforms:** Git, GitHub, `perf`  
 

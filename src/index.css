@@ -84,6 +84,13 @@ body {
 
 /* Lenis owns scrolling; a CSS smooth-scroll on top of it fights the JS easing. */
 
+/* Only hides the system cursor while <Cursor /> is actually mounted, so touch
+   and reduced-motion users keep the real one. */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none !important;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 3px;
@@ -93,6 +100,11 @@ body {
    content box at 360/390/430/640px. A fluid size keeps it inside the gutters at
    every width and still caps at the original 152px from ~1050px up.
 
+   The vw factor is set by the WIDEST heading, not the name: measured on
+   Amiamie, "EXPERIENCE" is 6.01em against "M.DANIYAL"'s 5.24em, so tuning for
+   the name alone clipped the longer section titles on narrow screens.
+   12.6vw keeps 6.01em inside a 100vw-5rem content box down to ~320px.
+
    line-height MUST stay >= 1. The design wants the rule to cross the baseline,
    which a sub-1 line-height used to achieve — but GSAP SplitText's `mask` option
    sizes each character's clipping box to the line box, so a 0.53em leading
@@ -100,7 +112,13 @@ body {
    up onto the baseline instead (see --banner-descent), which leaves the glyphs
    whole. Measured on Amiamie: ascent 117 + descent 35 = exactly 1.0em. */
 :root {
-  --banner-size: clamp(2.5rem, 14.5vw, 152px);
+  /* Derived from the AVAILABLE width, not a raw vw factor: the 5rem of page
+     gutter is a much larger fraction of a 320px screen than a 1440px one, so a
+     single vw number cannot hold a constant safety margin at both ends.
+     Divisor 6.9 = the widest heading ("EXPERIENCE", 6.01em) plus ~9% headroom,
+     because SplitText renders each character in its own inline-block and the
+     result runs a few percent wider than the raw text measurement. */
+  --banner-size: clamp(1.75rem, calc((100vw - 5rem) / 6.9), 152px);
   --banner-descent: 0.23; /* 35/152 — baseline to bottom of a line-height:1 box */
 }
 
@@ -109,12 +127,16 @@ body {
   line-height: 1;
 }
 
+/* 24px with wide tracking wrapped section intros to 4-5 lines on a phone. */
 @utility value-text-responsive {
-  @apply text-2xl md:text-[26px] lg:text-[32px];
+  @apply text-lg sm:text-xl md:text-[26px] lg:text-[32px];
 }
 
-@utility contact-text-responsive {
-  @apply text-[42px] sm:text-[52px] md:text-[62px] lg:text-[100px];
+/* Skills rows now carry up to six names plus a category tag, so they are sized
+   below the old 100px — still oversized, but the rows bleed rather than
+   becoming unreadably wide. */
+@utility skills-text-responsive {
+  @apply text-[26px] sm:text-[34px] md:text-[44px] lg:text-[60px];
 }
 
 /* Between Lenis, the GSAP entrances and the hero lattice there is a lot of

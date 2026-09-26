@@ -8,14 +8,17 @@ const Contact = () => {
   useGSAP(() => {
     if (prefersReducedMotion()) return;
 
+    // The old timing (0.5s delay + 0.3s stagger across four blocks) meant the
+    // phone number and socials were still invisible ~2.4s after the trigger —
+    // long enough that arriving here, especially via the nav's 2s smooth
+    // scroll, showed an empty section. Starts earlier and finishes sooner now.
     gsap.from(".social-link", {
-      y: 100,
+      y: 40,
       opacity: 0,
-      delay: 0.5,
-      duration: 1,
-      stagger: 0.3,
-      ease: "back.out",
-      scrollTrigger: { trigger: ".social-link" },
+      duration: 0.5,
+      stagger: 0.1,
+      ease: "power2.out",
+      scrollTrigger: { trigger: "#contact", start: "top 85%", once: true },
     });
   }, []);
 
@@ -29,14 +32,14 @@ const Contact = () => {
           textColor={"text-white"}
           withScrollTrigger={true}
         />
-        <div className="flex px-10 font-light text-white uppercase lg:text-[32px] text-[26px] leading-none mb-10">
+        <div className="flex px-10 font-light text-white uppercase text-lg sm:text-[22px] md:text-[26px] lg:text-[32px] leading-none mb-10">
           <div className="flex flex-col w-full gap-10">
             <div className="social-link">
               <h2>E-mail</h2>
               <div className="w-full h-px my-2 bg-white/30" />
               <a
                 href={`mailto:${contactData.email}`}
-                className="text-xl tracking-wider lowercase transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
+                className="text-base sm:text-lg tracking-wider lowercase transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
               >
                 {contactData.email}
               </a>
@@ -47,7 +50,7 @@ const Contact = () => {
               <div className="w-full h-px my-2 bg-white/30" />
               <a
                 href={`tel:${contactData.phone.replace(/\s/g, "")}`}
-                className="text-xl tracking-wider transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
+                className="text-base sm:text-lg tracking-wider transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
               >
                 {contactData.phone}
               </a>
@@ -59,7 +62,7 @@ const Contact = () => {
               <a
                 href={resume.href}
                 download
-                className="text-xl tracking-wider transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
+                className="text-base sm:text-lg tracking-wider transition-colors duration-200 md:text-2xl lg:text-3xl hover:text-gold"
               >
                 {resume.label} ↓
               </a>

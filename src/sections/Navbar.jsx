@@ -18,10 +18,15 @@ const Navbar = () => {
   const tl = useRef(null);
   const iconTl = useRef(null);
   const burgerRef = useRef(null);
+  const menuWrapRef = useRef(null);
+  const ringRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [showBurger, setShowBurger] = useState(true);
+  // The "Menu" caption is dark type, so it only shows while the beige hero is
+  // behind it — past that the burger travels over the black sections.
+  const [onHero, setOnHero] = useState(true);
 
-  useMagnetic(burgerRef, { strength: 0.4, radius: 120 });
+  useMagnetic(menuWrapRef, { strength: 0.4, radius: 120 });
 
   // Scramble a link back into place on hover. "01" as the character set keeps it
   // in the same register as the compute lattice behind the hero.
@@ -35,6 +40,31 @@ const Navbar = () => {
   };
 
   useGSAP(() => {
+    if (!prefersReducedMotion()) {
+      // The menu is the only navigation on the page, so it gets a deliberate
+      // entrance rather than just appearing in the corner.
+      gsap.from(menuWrapRef.current, {
+        scale: 0.4,
+        autoAlpha: 0,
+        duration: 0.8,
+        ease: "back.out(1.7)",
+        delay: 0.35,
+      });
+      gsap.fromTo(
+        ringRef.current,
+        { scale: 0.75, autoAlpha: 0.9 },
+        {
+          scale: 1.85,
+          autoAlpha: 0,
+          duration: 1.5,
+          ease: "power2.out",
+          delay: 0.9,
+          repeat: 2,
+          repeatDelay: 0.5,
+        }
+      );
+    }
+
     gsap.set(navRef.current, { xPercent: 100 });
     gsap.set([linksRef.current, contactRef.current], { autoAlpha: 0, x: -20 });
 
@@ -73,6 +103,7 @@ const Navbar = () => {
     const onScroll = () => {
       const y = window.scrollY;
       setShowBurger(y <= 80 || y < lastY);
+      setOnHero(y < window.innerHeight * 0.55);
       lastY = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -160,29 +191,60 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <button
-        ref={burgerRef}
-        type="button"
-        onClick={() => setIsOpen((open) => !open)}
-        aria-label={isOpen ? "Close menu" : "Open menu"}
-        aria-expanded={isOpen}
-        aria-controls="main-menu"
-        className="fixed z-50 flex flex-col items-center justify-center gap-1 transition-all duration-300 bg-black rounded-full cursor-pointer w-14 h-14 md:w-20 md:h-20 top-4 right-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-        style={
-          showBurger || isOpen
-            ? { clipPath: "circle(50% at 50% 50%)" }
-            : { clipPath: "circle(0% at 50% 50%)" }
-        }
+      <div
+        ref={menuWrapRef}
+        className="fixed z-50 flex flex-col items-center gap-2 top-4 right-10"
       >
+        <div className="relative">
+          {/* Both rings are siblings of the button, not classes on it: the
+              button's clipPath (which drives the show/hide) would clip a
+              box-shadow ring away entirely. */}
+          <span
+            aria-hidden="true"
+            className={`absolute -inset-[6px] border-2 rounded-full pointer-events-none border-gold transition-opacity duration-300 ${
+              showBurger || isOpen ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          {/* Expanding gold ring — plays a few times on load, then rests. */}
+          <span
+            ref={ringRef}
+            aria-hidden="true"
+            className="absolute inset-0 border-2 rounded-full pointer-events-none border-gold"
+          />
+          <button
+            ref={burgerRef}
+            type="button"
+            onClick={() => setIsOpen((open) => !open)}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="main-menu"
+            className="relative flex flex-col items-center justify-center gap-1 transition-all duration-300 bg-black rounded-full cursor-pointer w-14 h-14 md:w-20 md:h-20 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+            style={
+              showBurger || isOpen
+                ? { clipPath: "circle(50% at 50% 50%)" }
+                : { clipPath: "circle(0% at 50% 50%)" }
+            }
+          >
+            <span
+              ref={topLineRef}
+              className="block w-8 h-0.5 bg-white rounded-full origin-center"
+            />
+            <span
+              ref={bottomLineRef}
+              className="block w-8 h-0.5 bg-white rounded-full origin-center"
+            />
+          </button>
+        </div>
+
         <span
-          ref={topLineRef}
-          className="block w-8 h-0.5 bg-white rounded-full origin-center"
-        />
-        <span
-          ref={bottomLineRef}
-          className="block w-8 h-0.5 bg-white rounded-full origin-center"
-        />
-      </button>
+          aria-hidden="true"
+          className={`text-[10px] tracking-[0.3em] uppercase text-black/70 transition-opacity duration-300 ${
+            onHero && !isOpen && showBurger ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          Menu
+        </span>
+      </div>
     </>
   );
 };

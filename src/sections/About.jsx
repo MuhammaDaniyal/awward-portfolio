@@ -35,7 +35,7 @@ const About = () => {
         <div className="w-16 h-0.5 mb-10 bg-gold" />
         <AnimatedTextLines
           text={aboutData.text}
-          className="max-w-5xl text-xl font-light tracking-wide md:text-2xl lg:text-3xl text-white/60"
+          className="max-w-5xl text-base sm:text-lg font-light tracking-normal sm:tracking-wide md:text-2xl lg:text-3xl text-white/60"
         />
       </div>
     </section>

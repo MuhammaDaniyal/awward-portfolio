@@ -21,22 +21,21 @@ const heroData = {
   subtitle: `I build AI-powered products and full-stack web systems,
 then make them fast.`,
 
-  // Small type framing the top of the hero.
-  marker: "Muhammad Daniyal",
+  // Small type framing the top of the hero. No name — the 152px headline below
+  // already carries it, and repeating it wasted the slot.
   role: "Full-Stack & AI Engineer",
   education: "BSCS '27 · FAST-NUCES",
   location: "Islamabad, PK",
   status: "Software Engineer @ Avants Lab",
 
-  // Scannable stack line under the headline — the first thing a recruiter looks
-  // for, and previously not visible until the Skills section.
-  stack: ["React", "Next.js", "Node", "TypeScript", "Python", "C++", "CUDA"],
 }
 
 // The four things a recruiter actually wants to click, surfaced in the hero
 // instead of being reachable only through the menu or the page footer.
 export const heroActions = [
-  { label: "Download CV", href: "/Muhammad-Daniyal-CV.pdf", icon: "\u2193", download: true },
+  // `primary` gets the solid treatment — it's the one thing a recruiter is most
+  // likely to want, so it shouldn't look like the other three.
+  { label: "Download CV", href: "/Muhammad-Daniyal-CV.pdf", icon: "\u2193", download: true, primary: true },
   { label: "GitHub", href: "https://github.com/MuhammaDaniyal", icon: "\u2197", external: true },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/muhammadaniyal/", icon: "\u2197", external: true },
   { label: "Email", href: "mailto:daniyal2771@gmail.com", icon: "\u2197" },
@@ -190,7 +189,7 @@ export const projectsData = [
 
 const contactData = {
   tagline: "You dream it, I code it",
-  text: `Open to internships and new work.
+  text: `Building at Avants Lab, open to interesting problems.
         Let's connect & build something fast.`,
   email: "daniyal2771@gmail.com",
   phone: "+92 316 5605744",
@@ -206,12 +205,61 @@ export const navSections = [
   "contact",
 ];
 
-// Rendered as parallax rows in <Skills />; `italic` matches the original styling.
+// The full inventory, grouped. Everything here comes from cv.md or a project's
+// tech list. This is the ONLY place skills are listed — the hero used to repeat
+// a six-item subset, which read as the same list twice.
 export const skillsData = [
-  [{ name: "React", strong: true }, { name: "Next.js" }, { name: "Tailwind" }],
-  [{ name: "C/C++" }, { name: "Java", italic: true }, { name: "Python" }],
-  [{ name: "CUDA" }, { name: "OpenMP" }, { name: "OpenACC", italic: true }],
-  [{ name: "Node" }, { name: "MongoDB" }, { name: "SQL" }],
+  {
+    label: "Languages",
+    items: [
+      { name: "C/C++", strong: true },
+      { name: "Python" },
+      { name: "Java", italic: true },
+      { name: "TypeScript" },
+      { name: "JavaScript" },
+      { name: "SQL" },
+    ],
+  },
+  {
+    label: "Frontend",
+    items: [{ name: "React", strong: true }, { name: "Next.js" }, { name: "Tailwind" }],
+  },
+  {
+    label: "Backend",
+    items: [
+      { name: "Node" },
+      { name: "Express" },
+      { name: "MongoDB" },
+      { name: "Flask", italic: true },
+    ],
+  },
+  {
+    label: "Parallel",
+    items: [
+      { name: "CUDA", strong: true },
+      { name: "OpenMP" },
+      { name: "OpenACC", italic: true },
+      { name: "OpenMPI" },
+      { name: "OpenCL" },
+    ],
+  },
+  {
+    label: "Systems",
+    items: [
+      { name: "AVX2 SIMD" },
+      { name: "Linux" },
+      { name: "perf", italic: true },
+      { name: "Git" },
+    ],
+  },
+  {
+    label: "AI / ML",
+    items: [
+      { name: "Scikit-learn" },
+      { name: "Streamlit" },
+      { name: "Computer Vision" },
+    ],
+  },
 ];
 
 export const resume = {

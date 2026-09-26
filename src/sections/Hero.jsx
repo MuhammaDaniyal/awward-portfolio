@@ -1,14 +1,11 @@
-import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import AnimatedHeaderSection from "../components/AnimatedHeaderSection";
-import ComputeField from "../components/ComputeField";
+import LatticeField from "../components/LatticeField";
 import { heroData, heroActions } from "../constants";
 import { prefersReducedMotion } from "../utils/motion";
 
 const Hero = () => {
-  const portraitRef = useRef(null);
-
   useGSAP(() => {
     if (prefersReducedMotion()) return;
 
@@ -30,49 +27,47 @@ const Hero = () => {
       delay: 0.7,
     });
 
-    // Same wipe the About image uses, so the two reveals feel related.
-    gsap.set(portraitRef.current, {
-      clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)",
-    });
-    gsap.to(portraitRef.current, {
-      clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-      duration: 1.6,
-      ease: "power4.out",
-      delay: 0.4,
-    });
+    // The portrait's reveal is owned by LatticeField's halftone intro.
   }, []);
 
   return (
     <section
       id="home"
-      // A constrained height (not min-height) is what lets the portrait band
-      // flex-shrink on short viewports instead of pushing the headline down.
-      className="relative flex flex-col h-[100svh] min-h-[40rem] overflow-hidden"
+      // Below lg the marker and headline blocks are genuinely taller than a
+      // short screen, so the section grows and the page scrolls. A fixed height
+      // there made flexbox shrink them below their own content, which overflowed
+      // the box and overlapped the next block. From lg up the layout is compact
+      // enough that a fixed height is safe, and the portrait band absorbs the
+      // slack instead of pushing the intro off-screen.
+      className="relative flex flex-col min-h-[100svh] lg:h-[100svh] overflow-hidden"
     >
-      <ComputeField />
+      <LatticeField />
 
       {/* Identity block. Stacks on phones, where the fixed burger would
           otherwise sit on top of the availability line. */}
-      <div className="relative z-10 flex flex-col gap-3 px-10 pt-8 pr-24 sm:flex-row sm:items-start sm:justify-between sm:gap-6 sm:pr-28 md:pr-36">
-        <div className="font-light leading-relaxed hero-marker">
-          <p className="text-xs tracking-[0.3em] uppercase text-black/70 sm:text-sm">
-            {heroData.marker}
-          </p>
-          <p className="text-xs tracking-[0.2em] uppercase text-black/45">
+      <div // Stacked until lg: side by side, the role and the availability pill split
+        // the width and the role wrapped to two lines at 640-768px.
+        className="relative z-10 shrink-0 flex flex-col gap-3 px-10 pt-8 pr-24 sm:pr-28 md:pr-36 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+        {/* No name here — the headline below already says it, at 152px. What a
+            recruiter needs first is the role, so it is set as a statement
+            rather than the wide-tracked micro-caps used elsewhere. */}
+        <div className="leading-snug hero-marker">
+          <span aria-hidden="true" className="block w-10 h-0.5 mb-3 bg-gold" />
+          <p className="text-base font-normal tracking-[0.06em] uppercase text-black sm:text-lg lg:text-xl">
             {heroData.role}
           </p>
-          <p className="text-xs tracking-[0.2em] uppercase text-black/45">
+          <p className="mt-1.5 text-[11px] font-light tracking-[0.18em] uppercase text-black/65 sm:text-xs">
             {heroData.education}
             <span className="hidden sm:inline"> · {heroData.location}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-2 hero-marker shrink-0 sm:pt-1">
+        <div className="flex items-center gap-2 hero-marker shrink-0 lg:pt-1">
           <span className="relative flex w-2 h-2">
             <span className="absolute inline-flex w-full h-full rounded-full opacity-60 animate-ping bg-gold" />
             <span className="relative inline-flex w-2 h-2 rounded-full bg-gold" />
           </span>
-          <p className="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-black/60 sm:text-right">
+          <p className="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-black/70 lg:text-right">
             {heroData.status}
           </p>
         </div>
@@ -82,22 +77,8 @@ const Hero = () => {
           band empty — so the stack and the calls to action live here rather than
           under the headline, where they would cost vertical space. */}
       <div className="relative z-10 flex flex-col items-center flex-1 min-h-0 gap-6 px-10 pt-6 pb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10 md:pt-12">
-        <div className="order-2 flex w-full flex-col gap-5 sm:order-1 sm:w-auto sm:max-w-[22rem] lg:max-w-[38rem]">
-          <ul className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] sm:text-xs tracking-[0.2em] uppercase text-black/55 hero-cta">
-            {heroData.stack.map((tech, index) => (
-              <li key={tech} className="flex items-center gap-3">
-                {index > 0 && (
-                  <span
-                    aria-hidden="true"
-                    className="w-1 h-1 rounded-full bg-gold"
-                  />
-                )}
-                {tech}
-              </li>
-            ))}
-          </ul>
-
-          <ul className="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div className="order-2 flex w-full flex-col sm:order-1 sm:w-auto sm:max-w-[22rem] lg:max-w-[40rem]">
+          <ul className="flex flex-wrap items-center gap-x-3 gap-y-2 lg:gap-x-5 lg:gap-y-3">
             {heroActions.map((action) => (
               <li key={action.label} className="hero-cta">
                 <a
@@ -106,7 +87,13 @@ const Hero = () => {
                   {...(action.external
                     ? { target: "_blank", rel: "noopener noreferrer" }
                     : {})}
-                  className="inline-flex items-center gap-1.5 pb-1 text-xs tracking-[0.2em] uppercase transition-colors duration-200 border-b group border-black/25 hover:border-gold hover:text-black text-black/70"
+                  // Solid fills, not underlines: the lattice behind these is busy
+                  // enough that thin rules and 70% text blended straight into it.
+                  className={`group inline-flex items-center gap-2 rounded-full px-3 py-1.5 lg:px-4 lg:py-2 text-[11px] sm:text-xs tracking-[0.2em] uppercase transition-colors duration-200 ${
+                    action.primary
+                      ? "bg-black text-white hover:bg-DarkLava"
+                      : "bg-primary text-black border border-black/40 hover:border-gold hover:bg-white"
+                  }`}
                 >
                   {action.label}
                   <span
@@ -122,7 +109,7 @@ const Hero = () => {
         </div>
 
         <img
-          ref={portraitRef}
+          data-portrait
           src="/images/portrait.webp"
           srcSet="/images/portrait.webp 1x, /images/portrait@2x.webp 2x"
           alt="Muhammad Daniyal"
@@ -137,7 +124,7 @@ const Hero = () => {
         />
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 shrink-0">
         <AnimatedHeaderSection
           subTitle={heroData.tagline}
           title={heroData.name}

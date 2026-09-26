@@ -41,8 +41,8 @@ const Experience = () => {
         >
           <div className="flex flex-col gap-6 font-light">
             <div className="flex flex-col gap-2">
-              <h2 className="text-4xl lg:text-5xl">{job.role}</h2>
-              <p className="text-xl tracking-widest lg:text-2xl text-black/60">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">{job.role}</h2>
+              <p className="text-base sm:text-lg tracking-wide md:tracking-widest lg:text-2xl text-black/60">
                 {job.company} — {job.location}
               </p>
             </div>
@@ -55,7 +55,7 @@ const Experience = () => {
               {job.points.map((point, pointIndex) => (
                 <li
                   key={pointIndex}
-                  className="text-xl leading-relaxed tracking-widest lg:text-2xl text-black/60 text-pretty"
+                  className="text-base sm:text-lg leading-relaxed tracking-normal md:tracking-widest lg:text-2xl text-black/60 text-pretty"
                 >
                   {point}
                 </li>
